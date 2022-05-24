@@ -2,16 +2,38 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dbconnect= require('./src/database/dbconnection');
+
+
 
 const app = express();
 app.use(express.json());
 dbconnect();
 
-app.use(cors({ origin: '*', credentials: true }));
-app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
+app.set('view engine', 'hbs');
+app.set('views', __dirname + '/src/views');
+
+
+// const corsOpts = {
+//   origin: ['http://localhost:5001','http://localhost:3000','http://localhost:3001','https://agriha.arclif.com'],
+//   methods: [
+//     'GET',
+//     'POST',
+//     'PUT',
+//     'DELETE',
+//   ],
+//   allowedHeaders: [
+//     'Content-Type',
+//   ],
+// };
+// app.use(cors(corsOpts));
+app.use(cookieParser());
+app.use(cors({ origin: '*', credentials: true }));
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -161,6 +183,6 @@ const authrouter=require('./src/route/auth')
 
 app.use('/',authrouter)
 
-app.listen(process.env.PORT || 8888,()=>{
+app.listen(process.env.PORT || 8881,()=>{
 	console.log(`server started at ${process.env.PORT} `);
 });

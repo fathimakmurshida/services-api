@@ -19,9 +19,10 @@ const BuldingDetailsSchema = new Schema({
     design_type: {
         type: String,
     },
-    home_requirements: {
-        type: Array,default:[]
-    },
+    home_requirements: [],
+    // {
+    //     type: Array,default:[]
+    // },
     total_budget
     : {
         type: Number,

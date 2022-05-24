@@ -7,7 +7,7 @@ const userPlanData = require('../model/userplan')
 const BuldingDetails = require('../model/buildingdetails');
 const RequirementslistData = require('../model/requirementslist');
 const userAdonData = require('../model/useradonservices')
-
+const paymentData =require('../model/paymentSchema')
 //create plan
 const createPlan = (req, res) => {
     try {
@@ -348,7 +348,7 @@ const updateBuildingDetails=(req, res)=>{
 const getBuildingDetails=(req, res)=>{
     try {
         const loginid = req.body.id;
-        BuildingDetails.findById({ login_id: loginid }).then((response) => {
+        BuldingDetails.find({ login_id: loginid }).then((response) => {
             console.log(response);
             res.status(200).json({ msg: "success", details: response })
         }).catch((err) => {
@@ -487,32 +487,38 @@ const chooseAdon = (req, res) => {
 }
 //get user selected adonservices
 const getuseradon = (req, res) => {
-    //lohin_id and adonservices name
-    var details = [];
+    //login_id 
     try {
         console.log(req.body)
         const loginid = req.body.login_id;
         userAdonData.findOne({ login_id: loginid })
             .then((response) => {
-                console.log(response.adonservicename)
-                response.adonservicename.map((adonname, index) => {
-                    AdonServiceData.find({ adonservicename: adonname })
-                        .then((response) => {
-                            details.push(...response)
-                            res.status(200).json({ msg: "success", details: details })
-                        }).catch((err) => {
-                            console.error(err);
-                            res.json({ msg: `Useraderror : !! ${err}`, })
-                        })
-                })
+                console.log(response)
+                        res.status(200).json({ msg: "success", details: response })
+                    }).catch((err) => {
+                        console.error(err);
+                        res.json({ msg: `GetUserplanerror : !! ${err}`, })
+                    })
+         
+    } catch (err) {
+        res.send(err)
+    }
+}
 
-            }).catch((err) => {
+const ispaymentcompleted = (req,res) => {
+    try {
+
+         const loginid = req.body.userId;
+         paymentData.find({userId:loginid}).then((response)=>{
+            res.status(200).json({ msg: "payment details already added", details: response })
+             }).catch((err) => {
                 console.error(err);
-                res.json({ msg: `userplanerror : !! ${err}`, })
+                res.json({ msg: `isPaymentcompletederror: !! ${err}`, })
             })
     } catch (err) {
         res.send(err)
     }
+          
 }
 module.exports = {
     createPlan,
@@ -541,6 +547,9 @@ module.exports = {
     choosePlan,//save user plan
     getuserplan,//get user plan
     chooseAdon,//save user adon 
-    getuseradon//get user adon services
+    getuseradon,//get user adon services
+
+
+    ispaymentcompleted
 
 }
