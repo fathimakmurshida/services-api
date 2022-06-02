@@ -9,69 +9,6 @@ const fileupload = require("../model/fileupload");
 const Userfilestore = require("../model/userfilestore");
 const Adminfilestore = require("../model/adminfiles");
 
-const multerr = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // no larger 5mb
-  },
-});
-const { Storage } = require("@google-cloud/storage");
-
-
-let projectId = "arclif-services-backend"; // to be defined
-let keyFilename = "mykey.json"; // to be defined
-const storagee = new Storage({
-  projectId,
-  keyFilename,
-});
-const bucket = storagee.bucket("arclif-services"); // to be defined
-
-router.get("/uploadfile",async(req,res) => {
-    try {
-        const [files] = await bucket.getFiles();
-        res.send([files]);
-        console.log("Success");
-      } catch (error) {
-        res.send("Error:" + error);
-      } 
-});
-
-
-router.post("/uploadfile", multerr.single("file"), async (req, res) => {
-  
-
-  try {
-    //const myFile = req.file
-    //const imageUrl = await uploadImage(myFile)
-    console.log("made it /uploadfile");
-    if (req.file) {
-      console.log("file upload trying to upload");
-      const blob = bucket.file(req.file.originalname);
-      console.log(blob)
-      const blobStream = blob.createWriteStream();
-
-      blobStream.on("finish", () => {
-        // const publicUrl = format(
-        //     `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-        //   )
-        //   resolve(publicUrl) 
-        res.status(200).send("success")
-        // json({
-        //     message: "Upload was successful",
-        //     data: imageUrl
-        // })
-        console.log("success");
-      });
-      blobStream.end(req.file.buffer);
-    } else throw "error with image ";
-
-
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-
 router.post("/filedataupload/:id", (req, res) => {
     try {
       console.log(req.body);

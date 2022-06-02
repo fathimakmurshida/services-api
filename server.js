@@ -180,8 +180,9 @@ app.get('/',(req, res)=>{
 // });
 
 const authrouter=require('./src/route/auth')
-
+const cart = require('./src/route/cart')
 app.use('/',authrouter)
+app.use('/api/',cart)
 
 app.listen(process.env.PORT || 8881,()=>{
 	console.log(`server started at ${process.env.PORT} `);
